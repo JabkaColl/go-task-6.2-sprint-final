@@ -22,7 +22,7 @@ func HandlerIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := os.ReadFile("index.html")
+	data, err := os.ReadFile("./index.html")
 	if err != nil {
 		http.Error(w, "Unable to read index.html: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -44,7 +44,7 @@ func HandlerUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file, header, err := r.FormFile("myFile")
+	file, header, err := r.FormFile("file")
 	if err != nil {
 		http.Error(w, "Unable to get file from form: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -64,6 +64,9 @@ func HandlerUpload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ext := filepath.Ext(header.Filename)
+	if ext == "" {
+		ext = ".txt"
+	}
 	timestamp := time.Now().UTC().Format("2006-01-02_15-04-05")
 	newFileName := fmt.Sprintf("result_%s%s", timestamp, ext)
 	newFile, err := os.Create(newFileName)
