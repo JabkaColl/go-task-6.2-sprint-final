@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -44,9 +45,18 @@ func HandlerUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file, header, err := r.FormFile("file")
-	if err != nil {
-		http.Error(w, "Unable to get file from form: "+err.Error(), http.StatusInternalServerError)
+	var file multipart.File
+	var header *multipart.FileHeader
+	var errFile error
+
+	// Сначала пробуем "myFile" (для автотестов)
+	file, header, errFile = r.FormFile("myFile")
+	if errFile != nil {
+		// Если не нашли, пробуем "file" (для HTML формы)
+		file, header, errFile = r.FormFile("file")
+	}
+	if errFile != nil {
+		http.Error(w, "Unable to get file from form: "+errFile.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer file.Close()
