@@ -1,3 +1,2 @@
-module github.com/Yandex-Practicum/go1fl-sprint6-final
-
-go 1.24.0
+module github.com/JabkaColl/go-task-6.2-sprint-final
+go 1.21
